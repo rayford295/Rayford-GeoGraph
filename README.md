@@ -1,36 +1,44 @@
 # Rayford GeoGraph
 
-[Open Live Website](https://rayford295.github.io/Rayford-GeoGraph/) | [Open Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
+[Open Live Website](https://rayford295.github.io/Rayford-GeoGraph/) | [Google Scholar](https://scholar.google.com/citations?user=B-fiSHwAAAAJ) | [Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
 
-Rayford GeoGraph is a public GitHub Pages research atlas for Yifan Yang's papers, book chapters, datasets, and code-backed GeoAI workflows. It combines a graph-first frontend with a maintainable markdown knowledge base and explicit GitHub repository metadata for every research output.
+Rayford GeoGraph is my personal contribution to a more open research knowledge layer: a public knowledge base and knowledge graph for my papers, book chapters, datasets, GitHub repositories, and GeoAI workflows.
+
+Instead of presenting research as a flat publication list, this project treats each output as a connected object with a paper trail, code trail, method trail, and intellectual lineage. The goal is to make my research easier to inspect, reuse, teach, and extend.
+
+## What This Is
+
+- A public research atlas for Yifan Yang's GeoAI and GIScience work.
+- A star-map style website for exploring papers, repositories, datasets, and methods.
+- A structured markdown knowledge base that agents and humans can maintain together.
+- A weekly-updated Google Scholar snapshot for public citation metadata.
 
 ## One-Click Access
 
 - Live site: [rayford295.github.io/Rayford-GeoGraph](https://rayford295.github.io/Rayford-GeoGraph/)
+- GitHub repository: [github.com/rayford295/Rayford-GeoGraph](https://github.com/rayford295/Rayford-GeoGraph)
+- Google Scholar: [scholar.google.com/citations?user=B-fiSHwAAAAJ](https://scholar.google.com/citations?user=B-fiSHwAAAAJ)
 - Main academic homepage: [rayford295.github.io](https://rayford295.github.io/)
-- Repository: [github.com/rayford295/Rayford-GeoGraph](https://github.com/rayford295/Rayford-GeoGraph)
 
 ## Frontend Experience
 
-- Graph workspace as the first screen.
-- Theme filters, repository cards, and keyword search.
-- Network, timeline, and repository-weighted views.
-- Inspector panel with GitHub previews, repository metrics, methods, links, and graph relationships.
+- The first screen is an interactive research constellation.
+- The graph supports keyword search, theme filters, repository cards, and three views: `Network`, `Timeline`, and `Repo`.
+- Each node opens an inspector with repository metadata, methods, paper links, dataset links, and graph relationships.
+- The visual language is intentionally celestial: research outputs appear as connected stars in the same research sky.
 
-## Project Structure
+## Knowledge Architecture
 
-- `raw/`: Immutable source notes and paper records.
-- `wiki/`: Structured markdown pages maintained as the research knowledge layer.
-- `outputs/`: Generated artifacts.
-- `scripts/build-map.js`: Builds front-end graph data from `wiki/papers/`.
-- `data.js`: Generated graph dataset used by the website.
-- `CLAUDE.md`: Schema and workflow rules for future agent-assisted maintenance.
+- `wiki/papers/`: structured profiles for research outputs.
+- `wiki/concepts/`: reusable concept pages.
+- `wiki/comparisons/`: cross-paper research narratives.
+- `raw/papers/`: source records for paper and repository metadata.
+- `raw/scholar/google-scholar.json`: the latest Google Scholar profile snapshot.
+- `scripts/build-map.js`: compiles paper pages into `data.js`.
+- `scripts/fetch-scholar.js`: refreshes public Google Scholar metadata.
+- `.github/workflows/update-scholar.yml`: runs the Scholar refresh once per week.
 
-## How It Works
-
-Each first-authored research output is stored as a markdown page in `wiki/papers/` with structured frontmatter, repository metadata, and narrative sections. The build script reads those files, extracts metadata, and writes `data.js` for the website. This keeps the public visualization aligned with the underlying research knowledge base.
-
-## Current Scope
+## Current Research Outputs
 
 - ArcGIS Text SAM Tree Segmentation
 - GeoLocator
@@ -39,16 +47,24 @@ Each first-authored research output is stored as a markdown page in `wiki/papers
 - DamageArbiter
 - Satellite-to-Street
 
-## Local Update Workflow
+## Weekly Scholar Refresh
 
-1. Add or revise source notes in `raw/`.
-2. Update the corresponding markdown page in `wiki/papers/`.
-3. Run `node scripts/build-map.js`.
-4. Commit and push changes to refresh GitHub Pages.
+The repository includes a scheduled GitHub Actions workflow that runs once per week. It fetches the public Google Scholar profile, updates `raw/scholar/google-scholar.json`, and commits the new snapshot only when the data changes.
+
+Google Scholar may temporarily rate-limit automated requests. When that happens, the script keeps the previous snapshot and avoids breaking the website.
+
+## Local Workflow
+
+```bash
+npm run build
+npm run scholar:update
+```
+
+Use `npm run build` after editing `wiki/papers/`. Use `npm run scholar:update` when you want to refresh the local Google Scholar snapshot manually.
 
 ## Next Growth Directions
 
-1. Add dedicated node pages for each paper.
+1. Add dedicated project pages for each research output.
 2. Expand `wiki/concepts/` and `wiki/comparisons/`.
-3. Include talks, datasets, code releases, and collaborators as graph entities.
+3. Add talks, datasets, code releases, and collaborators as graph entities.
 4. Add bilingual content blocks directly on the website.

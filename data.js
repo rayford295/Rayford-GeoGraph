@@ -1,5 +1,5 @@
 window.researchMapData = {
-  "generatedAt": "2026-04-25T17:11:05.085Z",
+  "generatedAt": "2026-04-25T17:23:37.772Z",
   "themes": [
     "All",
     "Applied GeoAI Tooling",

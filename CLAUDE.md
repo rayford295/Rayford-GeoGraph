@@ -7,11 +7,19 @@ This repository is a bilingual research knowledge graph for Yifan Yang's first-a
 ## Core Structure
 
 - `raw/` stores source records and immutable input notes.
+- `raw/scholar/google-scholar.json` stores the latest public Google Scholar snapshot.
 - `wiki/` stores agent-maintained markdown pages.
 - `wiki/index.md` is the catalog of knowledge pages.
 - `wiki/log.md` is an append-only update log.
 - `scripts/build-map.js` compiles `wiki/papers/` into `data.js`.
 - `outputs/` stores generated reports and future exports.
+
+## Scholar Snapshot Rules
+
+- The Google Scholar profile URL is `https://scholar.google.com/citations?user=B-fiSHwAAAAJ`.
+- `scripts/fetch-scholar.js` should update only public profile metadata and article rows.
+- If Google Scholar rate-limits or returns incomplete data, keep the previous snapshot.
+- `.github/workflows/update-scholar.yml` runs the refresh weekly and commits only real data changes.
 
 ## Page Rules
 

@@ -21,6 +21,40 @@
   document.getElementById("theme-count").textContent = String(themeCount);
   document.getElementById("year-range").textContent = minYear + "-" + maxYear;
 
+  function renderScholar(snapshot) {
+    if (!snapshot || !snapshot.metrics) {
+      return;
+    }
+
+    const citations = document.getElementById("scholar-citations");
+    const hIndex = document.getElementById("scholar-hindex");
+    const updated = document.getElementById("scholar-updated");
+    const fetchedAt = snapshot.fetchedAt || snapshot.lastAttemptedAt;
+
+    citations.textContent = String(snapshot.metrics.citations?.all || "--");
+    hIndex.textContent = String(snapshot.metrics.hIndex?.all || "--");
+
+    if (fetchedAt) {
+      updated.textContent = "updated " + new Date(fetchedAt).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+  }
+
+  function loadScholarSnapshot() {
+    fetch("./raw/scholar/google-scholar.json", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then(renderScholar)
+      .catch(() => {
+        const updated = document.getElementById("scholar-updated");
+        if (updated) {
+          updated.textContent = "Scholar snapshot unavailable";
+        }
+      });
+  }
+
   function filteredNodes() {
     const query = searchTerm.trim().toLowerCase();
 
@@ -412,6 +446,7 @@
 
   buildFilters();
   initStarfield();
+  loadScholarSnapshot();
   renderAll();
   showDetail(data.nodes.find((node) => node.id === selectedNodeId));
 })();

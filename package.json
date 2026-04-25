@@ -9,6 +9,7 @@
   },
   "private": true,
   "scripts": {
-    "build": "node scripts/build-map.js"
+    "build": "node scripts/build-map.js",
+    "scholar:update": "node scripts/fetch-scholar.js"
   }
 }
