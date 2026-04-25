@@ -6,6 +6,12 @@ Rayford GeoGraph is my personal contribution to a more open research knowledge l
 
 Instead of presenting research as a flat publication list, this project treats each output as a connected object with a paper trail, code trail, method trail, and intellectual lineage. The goal is to make my research easier to inspect, reuse, teach, and extend.
 
+<p align="center">
+  <a href="https://rayford295.github.io/Rayford-GeoGraph/">
+    <img src="./assets/rayford-geograph-preview.gif" alt="Animated preview of the Rayford GeoGraph research constellation website" width="920">
+  </a>
+</p>
+
 ## What This Is
 
 - A public research atlas for Yifan Yang's GeoAI and GIScience work.

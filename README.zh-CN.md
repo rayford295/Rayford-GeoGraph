@@ -6,6 +6,12 @@ Rayford GeoGraph 是我为这个世界贡献的一份开放研究知识库和知
 
 它不是普通的 publication list。每个研究产出都是一个节点，有论文线索、代码线索、方法线索和研究脉络。我的目标是让别人更容易理解我的研究从哪里来、解决了什么问题、如何复现、还能往哪里走。
 
+<p align="center">
+  <a href="https://rayford295.github.io/Rayford-GeoGraph/">
+    <img src="./assets/rayford-geograph-preview.gif" alt="Rayford GeoGraph 研究星图网站动态预览" width="920">
+  </a>
+</p>
+
 ## 这是什么
 
 - 一个面向公众开放的 GeoAI/GIScience 研究图谱。
