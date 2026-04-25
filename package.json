@@ -1,0 +1,7 @@
+{
+  "name": "yifan-research-map",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-map.js"
+  }
+}

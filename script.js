@@ -10,9 +10,15 @@
       return node.themes;
     })
   ).size;
+  const years = data.nodes.map(function (node) {
+    return node.year;
+  });
+  const minYear = Math.min.apply(null, years);
+  const maxYear = Math.max.apply(null, years);
 
   document.getElementById("paper-count").textContent = String(data.nodes.length);
   document.getElementById("theme-count").textContent = String(themeCount);
+  document.getElementById("year-range").textContent = minYear + "-" + maxYear;
 
   let activeTheme = "All";
   let selectedNodeId = null;
