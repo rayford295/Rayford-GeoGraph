@@ -192,7 +192,7 @@ function parsePaperFile(filePath) {
 function buildData() {
   const paperFiles = fs
     .readdirSync(papersDir)
-    .filter((file) => file.endsWith(".md"))
+    .filter((file) => file.endsWith(".md") && !file.startsWith("_"))
     .sort();
 
   const nodes = paperFiles.map((file) => parsePaperFile(path.join(papersDir, file)));

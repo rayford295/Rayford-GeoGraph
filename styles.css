@@ -311,6 +311,32 @@ input {
   font-size: 0.82rem;
 }
 
+.fork-card {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid rgba(54, 241, 199, 0.28);
+  border-radius: 8px;
+  color: var(--ink);
+  text-decoration: none;
+  background:
+    linear-gradient(135deg, rgba(54, 241, 199, 0.14), transparent 46%),
+    rgba(255, 255, 255, 0.05);
+}
+
+.fork-card span,
+.fork-card em {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.fork-card strong {
+  line-height: 1.2;
+}
+
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -619,6 +645,99 @@ input {
   padding-left: 18px;
 }
 
+.guide-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.guide-links {
+  justify-content: end;
+}
+
+.guide-page {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.guide-hero,
+.guide-panel,
+.guide-command {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px);
+}
+
+.guide-hero {
+  padding: 30px;
+}
+
+.guide-hero h1 {
+  max-width: 860px;
+  margin: 4px 0 16px;
+  font-family: "Fraunces", serif;
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  line-height: 0.94;
+}
+
+.guide-hero p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.guide-panel {
+  padding: 18px;
+}
+
+.guide-panel span {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #06110e;
+  background: var(--gold);
+  font-weight: 900;
+}
+
+.guide-panel h2 {
+  margin: 14px 0 8px;
+  font-size: 1.15rem;
+}
+
+.guide-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.guide-command {
+  padding: 22px;
+}
+
+.guide-command h2 {
+  margin: 0 0 12px;
+}
+
+.guide-command pre {
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(186, 255, 232, 0.16);
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 1180px) {
   .atlas {
     grid-template-columns: 280px minmax(420px, 1fr);
@@ -659,5 +778,9 @@ input {
   .top-links a {
     flex: 1;
     text-align: center;
+  }
+
+  .guide-grid {
+    grid-template-columns: 1fr;
   }
 }

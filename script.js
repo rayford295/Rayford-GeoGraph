@@ -6,6 +6,9 @@
   const searchInput = document.getElementById("search-input");
   const modeTabs = Array.from(document.querySelectorAll(".mode-tab"));
   const starfield = document.getElementById("starfield");
+  const paperCount = document.getElementById("paper-count");
+  const themeCountElement = document.getElementById("theme-count");
+  const yearRangeElement = document.getElementById("year-range");
 
   const themeCount = new Set(data.nodes.flatMap((node) => node.themes)).size;
   const years = data.nodes.map((node) => node.year);
@@ -13,13 +16,18 @@
   const maxYear = Math.max.apply(null, years);
 
   let activeTheme = "All";
-  let selectedNodeId = data.nodes.find((node) => node.id === "damagearbiter")?.id || data.nodes[0].id;
+  let selectedNodeId = data.nodes.find((node) => node.id === "damagearbiter")?.id || data.nodes[0]?.id || null;
   let activeMode = "network";
   let searchTerm = "";
 
-  document.getElementById("paper-count").textContent = String(data.nodes.length);
-  document.getElementById("theme-count").textContent = String(themeCount);
-  document.getElementById("year-range").textContent = minYear + "-" + maxYear;
+  if (!svg || !filterBar || !repoList || !searchInput || !paperCount || !data.nodes.length) {
+    initStarfield();
+    return;
+  }
+
+  paperCount.textContent = String(data.nodes.length);
+  themeCountElement.textContent = String(themeCount);
+  yearRangeElement.textContent = minYear + "-" + maxYear;
 
   function renderScholar(snapshot) {
     if (!snapshot || !snapshot.metrics) {

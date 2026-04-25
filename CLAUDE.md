@@ -13,6 +13,8 @@ This repository is a bilingual research knowledge graph for Yifan Yang's first-a
 - `wiki/log.md` is an append-only update log.
 - `scripts/build-map.js` compiles `wiki/papers/` into `data.js`.
 - `outputs/` stores generated reports and future exports.
+- `docs/FORK_GUIDE.md` and `docs/FORK_GUIDE.zh-CN.md` explain how others can fork the project.
+- `wiki/papers/_template.md` is a reusable research-output template.
 
 ## Scholar Snapshot Rules
 
@@ -41,6 +43,8 @@ Every research output page in `wiki/papers/` must include YAML frontmatter with:
 - `position`
 - `color`
 - `radius`
+
+Files in `wiki/papers/` that begin with `_` are templates or internal scaffolds. They must not be compiled into `data.js`.
 
 The `repository` object should include:
 
