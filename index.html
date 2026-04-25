@@ -3,212 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yifan Yang | Research Output Map</title>
+  <title>Rayford GeoGraph | Yifan Yang Research Atlas</title>
   <meta
     name="description"
-    content="An interactive research map of Yifan Yang's first-authored publications, book chapters, and code-backed GeoAI workflows."
+    content="Rayford GeoGraph is an interactive research atlas for Yifan Yang's papers, book chapters, repositories, datasets, and GeoAI workflows."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23102019'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial' font-size='22' font-weight='800' fill='%231fc7a1'%3ERG%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Research Knowledge Graph</p>
-        <h1>Visualize a Research Journey, Not Just a Publication List.</h1>
-        <p class="hero-text">
-          This map turns first-authored papers, book chapters, and code-backed workflows into connected research objects.
-          Each node shows a publication, its core question, its methods, and how it extends earlier work across GeoAI, multimodal learning, disaster intelligence, and geo-privacy.
-        </p>
-        <div class="hero-actions">
-          <a class="button primary" href="#map">Open Research Map</a>
-          <a class="button secondary" href="https://rayford295.github.io/" target="_blank" rel="noopener">Visit Main Website</a>
-        </div>
-        <div class="hero-stats" aria-label="Project overview">
-          <div class="stat-card">
-            <span class="stat-value" id="paper-count">0</span>
-            <span class="stat-label">Research Outputs</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value" id="theme-count">0</span>
-            <span class="stat-label">Research Themes</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value" id="year-range">2024-2026</span>
-            <span class="stat-label">Current Timeline</span>
-          </div>
-        </div>
-      </div>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#graph" aria-label="Rayford GeoGraph">
+        <span class="brand-mark">RG</span>
+        <span>
+          <strong>Rayford GeoGraph</strong>
+          <small>Research atlas powered by papers and GitHub repositories</small>
+        </span>
+      </a>
 
-      <aside class="hero-panel">
-        <h2>Why This Format Works</h2>
-        <ul class="benefit-list">
-          <li>Shows how one paper leads to the next.</li>
-          <li>Makes methods and themes legible at a glance.</li>
-          <li>Gives each paper a compact project-page experience.</li>
-          <li>Turns your website into a memorable research narrative.</li>
-        </ul>
-        <div class="quick-links">
-          <a href="https://rayford295.github.io/yifan-research-map/" target="_blank" rel="noopener">Open This Website</a>
-          <a href="https://rayford295.github.io/" target="_blank" rel="noopener">Open Main Homepage</a>
-          <a href="https://github.com/rayford295/yifan-research-map" target="_blank" rel="noopener">Open GitHub Repository</a>
+      <label class="search-box" for="search-input">
+        <span>Search</span>
+        <input id="search-input" type="search" placeholder="CLIP, Text SAM, street-view, geo-privacy">
+      </label>
+
+      <nav class="top-links" aria-label="Primary links">
+        <a href="https://rayford295.github.io/" target="_blank" rel="noopener">Main Site</a>
+        <a href="https://github.com/rayford295/yifan-research-map" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="atlas">
+      <aside class="source-rail" aria-label="Repository sources">
+        <div class="rail-heading">
+          <p>Sources</p>
+          <strong id="paper-count">0</strong>
+          <span>research outputs</span>
         </div>
+
+        <div class="rail-stats">
+          <div>
+            <strong id="theme-count">0</strong>
+            <span>themes</span>
+          </div>
+          <div>
+            <strong id="year-range">2024-2026</strong>
+            <span>timeline</span>
+          </div>
+        </div>
+
+        <div class="filter-bar" id="filter-bar" aria-label="Theme filters"></div>
+
+        <div class="repo-list" id="repo-list" aria-label="Repository cards"></div>
       </aside>
-    </div>
-  </header>
 
-  <main>
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Knowledge Base</p>
-          <h2>Structured for Ongoing Growth</h2>
+      <section class="graph-stage" id="graph">
+        <div class="stage-toolbar">
+          <div>
+            <p class="kicker">Interactive Knowledge Graph</p>
+            <h1>Every output has a paper trail and a code trail.</h1>
+          </div>
+          <div class="mode-tabs" aria-label="Graph modes">
+            <button class="mode-tab active" type="button" data-mode="network">Network</button>
+            <button class="mode-tab" type="button" data-mode="timeline">Timeline</button>
+            <button class="mode-tab" type="button" data-mode="repo">Repo</button>
+          </div>
         </div>
-        <p class="section-intro">
-          The website now sits on top of a markdown knowledge base. That means new papers, concepts, and relationships can be added in a structured way instead of manually editing every visual element.
-        </p>
-      </div>
 
-      <div class="reading-modes">
-        <article class="mode-card">
-          <h3>Raw Sources</h3>
-          <p>Paper records and source notes live in a separate input layer, which keeps the provenance of each node clear.</p>
-        </article>
-        <article class="mode-card">
-          <h3>Wiki Pages</h3>
-          <p>Each paper has a markdown page with metadata, summary, impact, methods, and graph connections.</p>
-        </article>
-        <article class="mode-card">
-          <h3>Build Script</h3>
-          <p>A small compiler reads the wiki pages and generates the graph dataset used by the public website.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Map Logic</p>
-          <h2>Read the Graph in Three Ways</h2>
+        <div class="graph-wrap">
+          <svg id="graph-svg" viewBox="0 0 980 660" role="img" aria-label="Interactive research map"></svg>
         </div>
-        <p class="section-intro">
-          Use the same graph to understand research evolution over time, topic clusters, and method transitions.
-          The first version focuses on your published and preprint first-authored work.
-        </p>
-      </div>
+      </section>
 
-      <div class="reading-modes">
-        <article class="mode-card">
-          <h3>Timeline</h3>
-          <p>See how work grows from geo-privacy to multimodal disaster intelligence and generative post-disaster understanding.</p>
-        </article>
-        <article class="mode-card">
+      <aside class="inspector" id="detail-panel" aria-label="Research output detail">
+        <div class="inspector-topline">
+          <span id="detail-type">Research Output</span>
+          <span id="detail-status">Published</span>
+        </div>
+
+        <h2 id="detail-title">Select a node</h2>
+        <p class="detail-meta" id="detail-meta">Open any research output to inspect its paper, code repository, methods, links, and graph relationships.</p>
+
+        <div class="repo-preview" id="repo-preview"></div>
+
+        <section class="detail-section">
+          <h3>Summary</h3>
+          <p id="detail-summary">The graph is driven by markdown pages and enriched with GitHub repository metadata.</p>
+        </section>
+
+        <section class="detail-section">
+          <h3>Why It Matters</h3>
+          <p id="detail-impact"></p>
+        </section>
+
+        <section class="detail-section">
           <h3>Themes</h3>
-          <p>Compare papers by shared topics such as disaster assessment, visual-language models, and spatial intelligence.</p>
-        </article>
-        <article class="mode-card">
+          <div class="token-group" id="detail-themes"></div>
+        </section>
+
+        <section class="detail-section">
           <h3>Methods</h3>
-          <p>Track recurring ingredients like street-view imagery, CLIP-style representations, LMMs, and generative models.</p>
-        </article>
-      </div>
-    </section>
+          <div class="token-group" id="detail-methods"></div>
+        </section>
 
-    <section class="section map-section" id="map">
-      <div class="section-heading map-header">
-        <div>
-          <p class="section-kicker">Interactive Map</p>
-          <h2>Research Constellation</h2>
-        </div>
-        <p class="section-intro">
-          Select a theme to focus the graph. Click any node to open the paper detail panel and inspect links, methods, and research connections.
-        </p>
-      </div>
+        <section class="detail-section">
+          <h3>Connections</h3>
+          <ul class="connection-list" id="detail-connections"></ul>
+        </section>
 
-      <div class="filter-bar" id="filter-bar" aria-label="Theme filters"></div>
-
-      <div class="map-layout">
-        <div class="graph-shell">
-          <svg id="graph" viewBox="0 0 960 640" role="img" aria-label="Interactive research map"></svg>
-        </div>
-
-        <aside class="detail-panel" id="detail-panel">
-          <div class="detail-empty" id="detail-empty">
-            <p class="detail-kicker">Select a Node</p>
-            <h3>Open a paper to explore its role in your research program.</h3>
-            <p>
-              The panel will show the paper summary, theme tags, methods, links, and relationship notes that explain how each work fits the larger story.
-            </p>
-          </div>
-
-          <div class="detail-content hidden" id="detail-content">
-            <p class="detail-kicker" id="detail-type"></p>
-            <h3 id="detail-title"></h3>
-            <p class="detail-meta" id="detail-meta"></p>
-            <p class="detail-summary" id="detail-summary"></p>
-
-            <div class="detail-group">
-              <h4>Research Focus</h4>
-              <div class="token-group" id="detail-themes"></div>
-            </div>
-
-            <div class="detail-group">
-              <h4>Methods</h4>
-              <div class="token-group" id="detail-methods"></div>
-            </div>
-
-            <div class="detail-group">
-              <h4>Why It Matters</h4>
-              <p class="detail-impact" id="detail-impact"></p>
-            </div>
-
-            <div class="detail-group">
-              <h4>Connections</h4>
-              <ul class="connection-list" id="detail-connections"></ul>
-            </div>
-
-            <div class="detail-group">
-              <h4>Links</h4>
-              <div class="detail-links" id="detail-links"></div>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Future Extensions</p>
-          <h2>What This Repository Can Grow Into</h2>
-        </div>
-        <p class="section-intro">
-          The first release establishes the format. Future updates can deepen the graph without changing the core design.
-        </p>
-      </div>
-
-      <div class="roadmap-grid">
-        <article class="roadmap-card">
-          <h3>Node Pages</h3>
-          <p>Turn each paper into its own compact project page with figures, videos, datasets, and citations.</p>
-        </article>
-        <article class="roadmap-card">
-          <h3>Dynamic Views</h3>
-          <p>Add a year slider, method overlays, and citation or award badges that reveal impact over time.</p>
-        </article>
-        <article class="roadmap-card">
-          <h3>Broader Network</h3>
-          <p>Extend beyond first-authored papers to projects, talks, code releases, datasets, and collaborators.</p>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Built as a public GitHub Pages project for Yifan Yang's research narrative.</p>
-  </footer>
+        <section class="detail-section">
+          <h3>Links</h3>
+          <div class="detail-links" id="detail-links"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
 
   <script src="./data.js"></script>
   <script src="./script.js"></script>

@@ -1,14 +1,21 @@
-# Yifan Research Map
+# Rayford GeoGraph
 
 [Open Live Website](https://rayford295.github.io/yifan-research-map/) | [Open Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
 
-This repository powers a public GitHub Pages website for Yifan Yang's research knowledge graph. It combines an interactive frontend with a maintainable markdown knowledge base for first-authored papers, book chapters, and code-backed GeoAI workflows.
+Rayford GeoGraph is a public GitHub Pages research atlas for Yifan Yang's papers, book chapters, datasets, and code-backed GeoAI workflows. It combines a graph-first frontend with a maintainable markdown knowledge base and explicit GitHub repository metadata for every research output.
 
 ## One-Click Access
 
 - Live site: [rayford295.github.io/yifan-research-map](https://rayford295.github.io/yifan-research-map/)
 - Main academic homepage: [rayford295.github.io](https://rayford295.github.io/)
 - Repository: [github.com/rayford295/yifan-research-map](https://github.com/rayford295/yifan-research-map)
+
+## Frontend Experience
+
+- Graph workspace as the first screen.
+- Theme filters, repository cards, and keyword search.
+- Network, timeline, and repository-weighted views.
+- Inspector panel with GitHub previews, repository metrics, methods, links, and graph relationships.
 
 ## Project Structure
 
@@ -21,7 +28,7 @@ This repository powers a public GitHub Pages website for Yifan Yang's research k
 
 ## How It Works
 
-Each first-authored research output is stored as a markdown page in `wiki/papers/` with structured frontmatter and narrative sections. The build script reads those files, extracts metadata, and writes `data.js` for the website. This keeps the public visualization aligned with the underlying research knowledge base.
+Each first-authored research output is stored as a markdown page in `wiki/papers/` with structured frontmatter, repository metadata, and narrative sections. The build script reads those files, extracts metadata, and writes `data.js` for the website. This keeps the public visualization aligned with the underlying research knowledge base.
 
 ## Current Scope
 
@@ -42,6 +49,6 @@ Each first-authored research output is stored as a markdown page in `wiki/papers
 ## Next Growth Directions
 
 1. Add dedicated node pages for each paper.
-2. Expand `wiki/concepts/` and `wiki/comparisons/`.
-3. Include talks, datasets, code releases, and collaborators as graph entities.
-4. Add bilingual content blocks directly on the website.
+2. Rename the repository to `rayford-geograph` when ready.
+3. Expand `wiki/concepts/` and `wiki/comparisons/`.
+4. Include talks, datasets, code releases, and collaborators as graph entities.

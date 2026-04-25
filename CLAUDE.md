@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is a bilingual research knowledge graph for Yifan Yang's first-authored research outputs, including papers, book chapters, and code-backed GeoAI workflows. The public website should stay consistent with the markdown knowledge base.
+This repository is a bilingual research knowledge graph for Yifan Yang's first-authored research outputs, including papers, book chapters, datasets, and code-backed GeoAI workflows. The public website should stay consistent with the markdown knowledge base and GitHub repository metadata.
 
 ## Core Structure
 
@@ -29,9 +29,20 @@ Every research output page in `wiki/papers/` must include YAML frontmatter with:
 - `methods`
 - `links`
 - `connections`
+- `repository`
 - `position`
 - `color`
 - `radius`
+
+The `repository` object should include:
+
+- `name`
+- `url`
+- `preview`
+- `language`
+- `stars`
+- `forks`
+- `commits`
 
 Every research output page should also include enough narrative detail to support future project pages:
 

@@ -1,5 +1,5 @@
 window.researchMapData = {
-  "generatedAt": "2026-04-25T16:47:54.385Z",
+  "generatedAt": "2026-04-25T17:04:57.772Z",
   "themes": [
     "All",
     "Applied GeoAI Tooling",
@@ -65,6 +65,15 @@ window.researchMapData = {
           "label": "extends the portfolio from damage-oriented visual analysis to urban environmental feature extraction"
         }
       ],
+      "repository": {
+        "name": "ArcGIS-SAM-TreeSegmentation",
+        "url": "https://github.com/rayford295/ArcGIS-SAM-TreeSegmentation",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/ArcGIS-SAM-TreeSegmentation",
+        "language": "Python",
+        "stars": 1,
+        "forks": 0,
+        "commits": 4
+      },
       "position": {
         "x": 430,
         "y": 535
@@ -96,11 +105,19 @@ window.researchMapData = {
       "links": [
         {
           "label": "Paper",
-          "url": "https://arxiv.org/abs/2602.15257"
+          "url": "https://arxiv.org/abs/2603.14837"
         },
         {
           "label": "Code",
           "url": "https://github.com/rayford295/DamageArbiter"
+        },
+        {
+          "label": "Dataset",
+          "url": "https://doi.org/10.6084/m9.figshare.28801208.v2"
+        },
+        {
+          "label": "Hugging Face",
+          "url": "https://huggingface.co/datasets/Rayford295/BiTemporal-StreetView-Damage"
         }
       ],
       "connections": [
@@ -117,6 +134,15 @@ window.researchMapData = {
           "label": "pairs with generative work that can expand post-disaster street-view availability"
         }
       ],
+      "repository": {
+        "name": "DamageArbiter",
+        "url": "https://github.com/rayford295/DamageArbiter",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/DamageArbiter",
+        "language": "Python",
+        "stars": 1,
+        "forks": 1,
+        "commits": 61
+      },
       "position": {
         "x": 705,
         "y": 255
@@ -153,6 +179,14 @@ window.researchMapData = {
         {
           "label": "DOI",
           "url": "https://doi.org/10.5194/ica-abs-10-310-2025"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/rayford295/DisasterVLP"
+        },
+        {
+          "label": "Dataset",
+          "url": "https://doi.org/10.6084/m9.figshare.28801208.v2"
         }
       ],
       "connections": [
@@ -165,6 +199,15 @@ window.researchMapData = {
           "label": "provides the conceptual bridge to multimodal arbitration with CLIP-style reasoning"
         }
       ],
+      "repository": {
+        "name": "DisasterVLP",
+        "url": "https://github.com/rayford295/DisasterVLP",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/DisasterVLP",
+        "language": "Jupyter Notebook",
+        "stars": 2,
+        "forks": 3,
+        "commits": 26
+      },
       "position": {
         "x": 560,
         "y": 390
@@ -205,6 +248,10 @@ window.researchMapData = {
         {
           "label": "Code",
           "url": "https://github.com/rayford295/GeoLocator"
+        },
+        {
+          "label": "Demo",
+          "url": "https://gpts-privacy.github.io/auto-demo/"
         }
       ],
       "connections": [
@@ -217,6 +264,15 @@ window.researchMapData = {
           "label": "precedes later work on location-aware street-view damage analysis"
         }
       ],
+      "repository": {
+        "name": "GeoLocator",
+        "url": "https://github.com/rayford295/GeoLocator",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/GeoLocator",
+        "language": "HTML",
+        "stars": 1,
+        "forks": 1,
+        "commits": 22
+      },
       "position": {
         "x": 180,
         "y": 470
@@ -252,6 +308,18 @@ window.researchMapData = {
         {
           "label": "DOI",
           "url": "https://doi.org/10.1016/j.compenvurbsys.2025.102335"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/rayford295/Bi-Temporal-StreetView"
+        },
+        {
+          "label": "Dataset",
+          "url": "https://doi.org/10.6084/m9.figshare.28801208.v2"
+        },
+        {
+          "label": "Hugging Face",
+          "url": "https://huggingface.co/datasets/Rayford295/BiTemporal-StreetView-Damage"
         }
       ],
       "connections": [
@@ -268,6 +336,15 @@ window.researchMapData = {
           "label": "creates the street-view demand that motivates satellite-to-street generation"
         }
       ],
+      "repository": {
+        "name": "Bi-Temporal-StreetView",
+        "url": "https://github.com/rayford295/Bi-Temporal-StreetView",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/Bi-Temporal-StreetView",
+        "language": "Python",
+        "stars": 7,
+        "forks": 2,
+        "commits": 44
+      },
       "position": {
         "x": 370,
         "y": 300
@@ -299,11 +376,11 @@ window.researchMapData = {
       "links": [
         {
           "label": "Paper",
-          "url": "https://arxiv.org/abs/2603.10087"
+          "url": "https://arxiv.org/abs/2603.20697"
         },
         {
           "label": "Code",
-          "url": "https://github.com/rayford295/Satellite-to-Street"
+          "url": "https://github.com/rayford295/Sat2Street-DisasterGen"
         }
       ],
       "connections": [
@@ -316,6 +393,15 @@ window.researchMapData = {
           "label": "complements assessment models by generating new post-event visual inputs"
         }
       ],
+      "repository": {
+        "name": "Sat2Street-DisasterGen",
+        "url": "https://github.com/rayford295/Sat2Street-DisasterGen",
+        "preview": "https://opengraph.githubassets.com/rayford-geograph/rayford295/Sat2Street-DisasterGen",
+        "language": "Python",
+        "stars": 1,
+        "forks": 1,
+        "commits": 106
+      },
       "position": {
         "x": 790,
         "y": 500

@@ -35,6 +35,14 @@ connections:
     label: connects overhead or aerial imagery with downstream ground-level environmental interpretation
   - target: hyperlocal-disaster
     label: extends the portfolio from damage-oriented visual analysis to urban environmental feature extraction
+repository:
+  name: ArcGIS-SAM-TreeSegmentation
+  url: https://github.com/rayford295/ArcGIS-SAM-TreeSegmentation
+  preview: https://opengraph.githubassets.com/rayford-geograph/rayford295/ArcGIS-SAM-TreeSegmentation
+  language: Python
+  stars: 1
+  forks: 0
+  commits: 4
 position:
   x: 430
   y: 535

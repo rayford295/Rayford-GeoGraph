@@ -182,6 +182,7 @@ function parsePaperFile(filePath) {
     methods: frontmatter.methods || [],
     links: frontmatter.links || [],
     connections: frontmatter.connections || [],
+    repository: frontmatter.repository || null,
     position: frontmatter.position || { x: 100, y: 100 },
     color: frontmatter.color || "#157bc0",
     radius: frontmatter.radius || 34

@@ -1,177 +1,307 @@
 (function () {
   const data = window.researchMapData;
-  const svg = document.getElementById("graph");
+  const svg = document.getElementById("graph-svg");
   const filterBar = document.getElementById("filter-bar");
-  const detailEmpty = document.getElementById("detail-empty");
-  const detailContent = document.getElementById("detail-content");
+  const repoList = document.getElementById("repo-list");
+  const searchInput = document.getElementById("search-input");
+  const modeTabs = Array.from(document.querySelectorAll(".mode-tab"));
 
-  const themeCount = new Set(
-    data.nodes.flatMap(function (node) {
-      return node.themes;
-    })
-  ).size;
-  const years = data.nodes.map(function (node) {
-    return node.year;
-  });
+  const themeCount = new Set(data.nodes.flatMap((node) => node.themes)).size;
+  const years = data.nodes.map((node) => node.year);
   const minYear = Math.min.apply(null, years);
   const maxYear = Math.max.apply(null, years);
+
+  let activeTheme = "All";
+  let selectedNodeId = data.nodes.find((node) => node.id === "damagearbiter")?.id || data.nodes[0].id;
+  let activeMode = "network";
+  let searchTerm = "";
 
   document.getElementById("paper-count").textContent = String(data.nodes.length);
   document.getElementById("theme-count").textContent = String(themeCount);
   document.getElementById("year-range").textContent = minYear + "-" + maxYear;
 
-  let activeTheme = "All";
-  let selectedNodeId = null;
+  function filteredNodes() {
+    const query = searchTerm.trim().toLowerCase();
+
+    return data.nodes.filter((node) => {
+      const themeMatch = activeTheme === "All" || node.themes.indexOf(activeTheme) >= 0;
+      if (!themeMatch) {
+        return false;
+      }
+
+      if (!query) {
+        return true;
+      }
+
+      const searchable = [
+        node.title,
+        node.shortTitle,
+        node.summary,
+        node.impact,
+        node.type,
+        node.status,
+        node.venue,
+        node.authors,
+        node.repository?.name,
+        node.repository?.language,
+        ...(node.themes || []),
+        ...(node.methods || [])
+      ].join(" ").toLowerCase();
+
+      return searchable.includes(query);
+    });
+  }
 
   function buildFilters() {
-    data.themes.forEach(function (theme) {
+    data.themes.forEach((theme) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "filter-chip" + (theme === activeTheme ? " active" : "");
       button.textContent = theme;
-      button.addEventListener("click", function () {
+      button.addEventListener("click", () => {
         activeTheme = theme;
         syncFilterState();
-        renderGraph();
+        renderAll();
       });
       filterBar.appendChild(button);
     });
   }
 
   function syncFilterState() {
-    const chips = filterBar.querySelectorAll(".filter-chip");
-    chips.forEach(function (chip) {
+    filterBar.querySelectorAll(".filter-chip").forEach((chip) => {
       chip.classList.toggle("active", chip.textContent === activeTheme);
     });
   }
 
-  function renderGraph() {
-    while (svg.firstChild) {
-      svg.removeChild(svg.firstChild);
+  function renderRepoList() {
+    repoList.innerHTML = "";
+
+    filteredNodes().forEach((node) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "repo-card" + (node.id === selectedNodeId ? " active" : "");
+
+      const repoName = node.repository?.name || "No repository";
+      const stats = node.repository
+        ? `${node.repository.language} | ${node.repository.commits} commits | ${node.repository.stars} stars`
+        : "Repository metadata pending";
+
+      button.innerHTML = `
+        <small>${node.type} | ${node.year}</small>
+        <strong>${node.shortTitle}</strong>
+        <span>${repoName}</span>
+        <span>${stats}</span>
+      `;
+
+      button.addEventListener("click", () => {
+        selectNode(node.id);
+      });
+
+      repoList.appendChild(button);
+    });
+  }
+
+  function nodePosition(node, visibleNodes) {
+    if (activeMode === "network") {
+      return node.position;
     }
 
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    svg.appendChild(defs);
+    if (activeMode === "timeline") {
+      const yearSpan = Math.max(1, maxYear - minYear);
+      const sameYearNodes = visibleNodes.filter((candidate) => candidate.year === node.year);
+      const yearIndex = sameYearNodes.findIndex((candidate) => candidate.id === node.id);
+      const x = 120 + ((node.year - minYear) / yearSpan) * 740;
+      const y = 180 + yearIndex * 140;
+      return { x, y };
+    }
 
-    const linkGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const rank = visibleNodes
+      .slice()
+      .sort((a, b) => (b.repository?.commits || 0) - (a.repository?.commits || 0));
+    const index = rank.findIndex((candidate) => candidate.id === node.id);
+    const angle = (Math.PI * 2 * index) / Math.max(1, rank.length);
+    const commits = node.repository?.commits || 10;
+    const radius = 180 + Math.min(130, commits * 1.1);
+
+    return {
+      x: 490 + Math.cos(angle) * radius,
+      y: 330 + Math.sin(angle) * radius
+    };
+  }
+
+  function renderGraph() {
+    svg.innerHTML = "";
+
+    const visibleNodes = filteredNodes();
+    const visibleIds = new Set(visibleNodes.map((node) => node.id));
+    const positions = new Map(visibleNodes.map((node) => [node.id, nodePosition(node, visibleNodes)]));
+    const selected = data.nodes.find((node) => node.id === selectedNodeId);
+    const hotIds = new Set([selectedNodeId]);
+
+    if (selected) {
+      selected.connections.forEach((connection) => hotIds.add(connection.target));
+      data.nodes.forEach((node) => {
+        if (node.connections.some((connection) => connection.target === selected.id)) {
+          hotIds.add(node.id);
+        }
+      });
+    }
+
+    const linkGroup = createSvg("g");
+    const nodeGroup = createSvg("g");
     svg.appendChild(linkGroup);
     svg.appendChild(nodeGroup);
 
-    data.nodes.forEach(function (node) {
-      node.connections.forEach(function (connection) {
-        const target = data.nodes.find(function (candidate) {
-          return candidate.id === connection.target;
-        });
-
-        if (!target) {
+    visibleNodes.forEach((node) => {
+      node.connections.forEach((connection) => {
+        if (!visibleIds.has(connection.target)) {
           return;
         }
 
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", node.position.x);
-        line.setAttribute("y1", node.position.y);
-        line.setAttribute("x2", target.position.x);
-        line.setAttribute("y2", target.position.y);
-        line.setAttribute("class", "graph-link");
-
-        const nodeVisible = isVisible(node);
-        const targetVisible = isVisible(target);
-        if (!nodeVisible || !targetVisible) {
-          line.classList.add("muted");
-        }
-
+        const sourcePosition = positions.get(node.id);
+        const targetPosition = positions.get(connection.target);
+        const line = createSvg("line", {
+          x1: sourcePosition.x,
+          y1: sourcePosition.y,
+          x2: targetPosition.x,
+          y2: targetPosition.y,
+          class: "graph-link" + (hotIds.has(node.id) && hotIds.has(connection.target) ? " hot" : "")
+        });
         linkGroup.appendChild(line);
       });
     });
 
-    data.nodes.forEach(function (node) {
-      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      group.setAttribute("class", "graph-node");
-      group.setAttribute("tabindex", "0");
-      group.setAttribute("role", "button");
-      group.setAttribute("aria-label", node.title);
-
-      if (!isVisible(node)) {
-        group.classList.add("is-muted");
-      }
-
-      if (selectedNodeId === node.id) {
-        group.classList.add("is-selected");
-      }
-
-      group.addEventListener("click", function () {
-        selectedNodeId = node.id;
-        renderGraph();
-        showDetail(node);
+    visibleNodes.forEach((node) => {
+      const position = positions.get(node.id);
+      const group = createSvg("g", {
+        class: [
+          "graph-node",
+          node.id === selectedNodeId ? "is-selected" : "",
+          !hotIds.has(node.id) && selectedNodeId ? "is-muted" : ""
+        ].join(" ").trim(),
+        tabindex: "0",
+        role: "button",
+        "aria-label": node.title
       });
 
-      group.addEventListener("keydown", function (event) {
+      group.addEventListener("click", () => selectNode(node.id));
+      group.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          selectedNodeId = node.id;
-          renderGraph();
-          showDetail(node);
+          selectNode(node.id);
         }
       });
 
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", node.position.x);
-      circle.setAttribute("cy", node.position.y);
-      circle.setAttribute("r", node.radius);
-      circle.setAttribute("fill", node.color);
-      circle.setAttribute("fill-opacity", isVisible(node) ? "0.96" : "0.4");
+      if (node.id === selectedNodeId) {
+        group.appendChild(createSvg("circle", {
+          class: "node-halo",
+          cx: position.x,
+          cy: position.y,
+          r: node.radius + 8
+        }));
+      }
 
-      const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      title.setAttribute("x", node.position.x);
-      title.setAttribute("y", node.position.y + node.radius + 24);
-      title.setAttribute("text-anchor", "middle");
-      title.textContent = node.shortTitle;
+      const repoWeight = Math.min(18, Math.round((node.repository?.commits || 0) / 8));
+      group.appendChild(createSvg("circle", {
+        class: "core",
+        cx: position.x,
+        cy: position.y,
+        r: node.radius + repoWeight,
+        fill: node.color
+      }));
 
-      const year = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      year.setAttribute("x", node.position.x);
-      year.setAttribute("y", node.position.y + node.radius + 40);
-      year.setAttribute("text-anchor", "middle");
-      year.setAttribute("class", "node-year");
-      year.textContent = String(node.year);
+      group.appendChild(createSvg("text", {
+        x: position.x,
+        y: position.y + node.radius + repoWeight + 23,
+        "text-anchor": "middle"
+      }, node.shortTitle));
 
-      group.appendChild(circle);
-      group.appendChild(title);
-      group.appendChild(year);
+      group.appendChild(createSvg("text", {
+        class: "node-meta",
+        x: position.x,
+        y: position.y + node.radius + repoWeight + 39,
+        "text-anchor": "middle"
+      }, `${node.year} | ${node.repository?.commits || 0} commits`));
+
       nodeGroup.appendChild(group);
     });
   }
 
-  function isVisible(node) {
-    return activeTheme === "All" || node.themes.indexOf(activeTheme) >= 0;
+  function createSvg(tag, attributes, text) {
+    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.entries(attributes || {}).forEach(([key, value]) => {
+      element.setAttribute(key, value);
+    });
+    if (text) {
+      element.textContent = text;
+    }
+    return element;
+  }
+
+  function selectNode(nodeId) {
+    selectedNodeId = nodeId;
+    const node = data.nodes.find((candidate) => candidate.id === nodeId);
+    renderAll();
+    showDetail(node);
   }
 
   function showDetail(node) {
-    detailEmpty.classList.add("hidden");
-    detailContent.classList.remove("hidden");
+    if (!node) {
+      return;
+    }
 
     document.getElementById("detail-type").textContent = node.type;
+    document.getElementById("detail-status").textContent = node.status;
     document.getElementById("detail-title").textContent = node.title;
     document.getElementById("detail-meta").textContent = [
       node.year,
       node.venue,
-      node.status,
       node.authors
     ].join(" | ");
     document.getElementById("detail-summary").textContent = node.summary;
     document.getElementById("detail-impact").textContent = node.impact;
 
+    renderRepoPreview(node);
     populateTokens("detail-themes", node.themes);
     populateTokens("detail-methods", node.methods);
     populateLinks(node.links);
     populateConnections(node.connections);
   }
 
+  function renderRepoPreview(node) {
+    const container = document.getElementById("repo-preview");
+    container.innerHTML = "";
+
+    if (!node.repository) {
+      return;
+    }
+
+    const anchor = document.createElement("a");
+    anchor.className = "repo-art";
+    anchor.href = node.repository.url;
+    anchor.target = "_blank";
+    anchor.rel = "noopener";
+    anchor.innerHTML = `
+      <span>${node.repository.language}</span>
+      <strong>${node.repository.name}</strong>
+      <em>${node.shortTitle}</em>
+    `;
+    container.appendChild(anchor);
+
+    const metrics = document.createElement("div");
+    metrics.className = "repo-metrics";
+    metrics.innerHTML = `
+      <div><strong>${node.repository.commits}</strong><span>commits</span></div>
+      <div><strong>${node.repository.stars}</strong><span>stars</span></div>
+      <div><strong>${node.repository.forks}</strong><span>forks</span></div>
+    `;
+    container.appendChild(metrics);
+  }
+
   function populateTokens(containerId, values) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
-
-    values.forEach(function (value) {
+    values.forEach((value) => {
       const token = document.createElement("span");
       token.className = "token";
       token.textContent = value;
@@ -182,8 +312,7 @@
   function populateLinks(links) {
     const container = document.getElementById("detail-links");
     container.innerHTML = "";
-
-    links.forEach(function (link) {
+    links.forEach((link) => {
       const anchor = document.createElement("a");
       anchor.href = link.url;
       anchor.target = "_blank";
@@ -196,22 +325,36 @@
   function populateConnections(connections) {
     const container = document.getElementById("detail-connections");
     container.innerHTML = "";
-
-    connections.forEach(function (connection) {
-      const relatedNode = data.nodes.find(function (node) {
-        return node.id === connection.target;
-      });
-
+    connections.forEach((connection) => {
+      const relatedNode = data.nodes.find((node) => node.id === connection.target);
       if (!relatedNode) {
         return;
       }
-
       const item = document.createElement("li");
-      item.textContent = relatedNode.shortTitle + ": " + connection.label + ".";
+      item.textContent = `${relatedNode.shortTitle}: ${connection.label}.`;
       container.appendChild(item);
     });
   }
 
+  function renderAll() {
+    renderRepoList();
+    renderGraph();
+  }
+
+  searchInput.addEventListener("input", (event) => {
+    searchTerm = event.target.value;
+    renderAll();
+  });
+
+  modeTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      activeMode = tab.dataset.mode;
+      modeTabs.forEach((candidate) => candidate.classList.toggle("active", candidate === tab));
+      renderGraph();
+    });
+  });
+
   buildFilters();
-  renderGraph();
+  renderAll();
+  showDetail(data.nodes.find((node) => node.id === selectedNodeId));
 })();

@@ -1,5 +1,5 @@
 {
-  "name": "yifan-research-map",
+  "name": "rayford-geograph",
   "private": true,
   "scripts": {
     "build": "node scripts/build-map.js"
