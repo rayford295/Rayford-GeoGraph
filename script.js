@@ -1,5 +1,5 @@
 (function () {
-  const data = window.researchMapData;
+  const data = window.researchMapData || { nodes: [], themes: [] };
   const svg = document.getElementById("graph-svg");
   const filterBar = document.getElementById("filter-bar");
   const repoList = document.getElementById("repo-list");
@@ -12,13 +12,23 @@
 
   const themeCount = new Set(data.nodes.flatMap((node) => node.themes)).size;
   const years = data.nodes.map((node) => node.year);
-  const minYear = Math.min.apply(null, years);
-  const maxYear = Math.max.apply(null, years);
+  const minYear = years.length ? Math.min.apply(null, years) : 0;
+  const maxYear = years.length ? Math.max.apply(null, years) : 0;
 
   let activeTheme = "All";
   let selectedNodeId = data.nodes.find((node) => node.id === "damagearbiter")?.id || data.nodes[0]?.id || null;
+  let hoveredNodeId = null;
   let activeMode = "network";
   let searchTerm = "";
+
+  const graphRuntime = {
+    nodeStates: new Map(),
+    nodeElements: new Map(),
+    links: [],
+    particles: [],
+    animationStarted: false,
+    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  };
 
   if (!svg || !filterBar || !repoList || !searchInput || !paperCount || !data.nodes.length) {
     initStarfield();
@@ -154,7 +164,7 @@
       const sameYearNodes = visibleNodes.filter((candidate) => candidate.year === node.year);
       const yearIndex = sameYearNodes.findIndex((candidate) => candidate.id === node.id);
       const x = 120 + ((node.year - minYear) / yearSpan) * 740;
-      const y = 180 + yearIndex * 140;
+      const y = 176 + yearIndex * 142;
       return { x, y };
     }
 
@@ -162,9 +172,9 @@
       .slice()
       .sort((a, b) => (b.repository?.commits || 0) - (a.repository?.commits || 0));
     const index = rank.findIndex((candidate) => candidate.id === node.id);
-    const angle = (Math.PI * 2 * index) / Math.max(1, rank.length);
+    const angle = (Math.PI * 2 * index) / Math.max(1, rank.length) - Math.PI / 2;
     const commits = node.repository?.commits || 10;
-    const radius = 180 + Math.min(130, commits * 1.1);
+    const radius = 170 + Math.min(140, commits * 1.05);
 
     return {
       x: 490 + Math.cos(angle) * radius,
@@ -172,28 +182,70 @@
     };
   }
 
+  function ensureNodeState(node, target) {
+    const existing = graphRuntime.nodeStates.get(node.id);
+    const repoWeight = Math.min(18, Math.round((node.repository?.commits || 0) / 8));
+
+    if (existing) {
+      existing.targetX = target.x;
+      existing.targetY = target.y;
+      existing.radius = node.radius + repoWeight;
+      return existing;
+    }
+
+    const seed = stringSeed(node.id);
+    const state = {
+      id: node.id,
+      x: target.x,
+      y: target.y,
+      displayX: target.x,
+      displayY: target.y,
+      targetX: target.x,
+      targetY: target.y,
+      radius: node.radius + repoWeight,
+      phase: seed * 0.017,
+      floatSpeed: 0.00035 + (seed % 7) * 0.00004,
+      floatAmp: 3 + (seed % 5)
+    };
+
+    graphRuntime.nodeStates.set(node.id, state);
+    return state;
+  }
+
   function renderGraph() {
     svg.innerHTML = "";
+    graphRuntime.nodeElements.clear();
+    graphRuntime.links = [];
+    graphRuntime.particles = [];
+
+    const defs = createSvg("defs");
+    defs.innerHTML = `
+      <filter id="node-glow" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="4.5" result="blur"></feGaussianBlur>
+        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.22 0 0 0 0 0.95 0 0 0 0 0.78 0 0 0 0.78 0"></feColorMatrix>
+        <feMerge>
+          <feMergeNode></feMergeNode>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+        </feMerge>
+      </filter>
+    `;
+    svg.appendChild(defs);
 
     const visibleNodes = filteredNodes();
     const visibleIds = new Set(visibleNodes.map((node) => node.id));
-    const positions = new Map(visibleNodes.map((node) => [node.id, nodePosition(node, visibleNodes)]));
     const selected = data.nodes.find((node) => node.id === selectedNodeId);
-    const hotIds = new Set([selectedNodeId]);
+    const hotIds = computeHotIds(selected, hoveredNodeId);
 
-    if (selected) {
-      selected.connections.forEach((connection) => hotIds.add(connection.target));
-      data.nodes.forEach((node) => {
-        if (node.connections.some((connection) => connection.target === selected.id)) {
-          hotIds.add(node.id);
-        }
-      });
-    }
-
-    const linkGroup = createSvg("g");
-    const nodeGroup = createSvg("g");
+    const linkGroup = createSvg("g", { class: "link-layer" });
+    const particleGroup = createSvg("g", { class: "particle-layer" });
+    const nodeGroup = createSvg("g", { class: "node-layer" });
     svg.appendChild(linkGroup);
+    svg.appendChild(particleGroup);
     svg.appendChild(nodeGroup);
+
+    visibleNodes.forEach((node) => {
+      ensureNodeState(node, nodePosition(node, visibleNodes));
+    });
 
     visibleNodes.forEach((node) => {
       node.connections.forEach((connection) => {
@@ -201,33 +253,65 @@
           return;
         }
 
-        const sourcePosition = positions.get(node.id);
-        const targetPosition = positions.get(connection.target);
-        const line = createSvg("line", {
-          x1: sourcePosition.x,
-          y1: sourcePosition.y,
-          x2: targetPosition.x,
-          y2: targetPosition.y,
-          class: "graph-link" + (hotIds.has(node.id) && hotIds.has(connection.target) ? " hot" : "")
+        const isHot = hotIds.has(node.id) && hotIds.has(connection.target);
+        const path = createSvg("path", {
+          class: "graph-link" + (isHot ? " hot" : "")
         });
-        linkGroup.appendChild(line);
+        linkGroup.appendChild(path);
+
+        const link = {
+          sourceId: node.id,
+          targetId: connection.target,
+          path,
+          curve: linkCurve(node.id, connection.target),
+          hot: isHot,
+          particles: []
+        };
+
+        const particleCount = 3;
+        for (let index = 0; index < particleCount; index += 1) {
+          const particle = createSvg("circle", {
+            class: "energy-particle" + (isHot ? " hot" : ""),
+            r: isHot ? 3.8 : 2.2
+          });
+          particleGroup.appendChild(particle);
+          link.particles.push({
+            element: particle,
+            offset: index / particleCount,
+            speed: isHot ? 0.00018 : 0.00008
+          });
+        }
+
+        graphRuntime.links.push(link);
       });
     });
 
     visibleNodes.forEach((node) => {
-      const position = positions.get(node.id);
+      const state = graphRuntime.nodeStates.get(node.id);
+      const isSelected = node.id === selectedNodeId;
+      const isHot = hotIds.has(node.id);
+      const isDimmed = selectedNodeId && !isHot;
       const group = createSvg("g", {
         class: [
           "graph-node",
-          node.id === selectedNodeId ? "is-selected" : "",
-          !hotIds.has(node.id) && selectedNodeId ? "is-muted" : ""
+          isSelected ? "is-selected" : "",
+          isDimmed ? "is-muted" : ""
         ].join(" ").trim(),
         tabindex: "0",
         role: "button",
         "aria-label": node.title
       });
+      const visual = createSvg("g", { class: "node-visual" });
 
       group.addEventListener("click", () => selectNode(node.id));
+      group.addEventListener("mouseenter", () => {
+        hoveredNodeId = node.id;
+        applyGraphFocus();
+      });
+      group.addEventListener("mouseleave", () => {
+        hoveredNodeId = null;
+        applyGraphFocus();
+      });
       group.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -235,39 +319,228 @@
         }
       });
 
-      if (node.id === selectedNodeId) {
-        group.appendChild(createSvg("circle", {
-          class: "node-halo",
-          cx: position.x,
-          cy: position.y,
-          r: node.radius + 8
-        }));
-      }
-
-      const repoWeight = Math.min(18, Math.round((node.repository?.commits || 0) / 8));
       group.appendChild(createSvg("circle", {
-        class: "core",
-        cx: position.x,
-        cy: position.y,
-        r: node.radius + repoWeight,
-        fill: node.color
+        class: "node-hit",
+        r: state.radius + 56
       }));
 
-      group.appendChild(createSvg("text", {
-        x: position.x,
-        y: position.y + node.radius + repoWeight + 23,
+      if (isSelected) {
+        visual.appendChild(createSvg("circle", { class: "node-halo", r: state.radius + 10 }));
+        visual.appendChild(createSvg("circle", { class: "orbit-ring orbit-one", r: state.radius + 22 }));
+        visual.appendChild(createSvg("circle", { class: "orbit-ring orbit-two", r: state.radius + 34 }));
+      }
+
+      visual.appendChild(createSvg("circle", {
+        class: "node-aura",
+        r: state.radius + 20,
+        fill: node.color
+      }));
+      visual.appendChild(createSvg("circle", {
+        class: "core",
+        r: state.radius,
+        fill: node.color
+      }));
+      visual.appendChild(createSvg("circle", {
+        class: "node-spark",
+        cx: -state.radius * 0.28,
+        cy: -state.radius * 0.32,
+        r: Math.max(5, state.radius * 0.15)
+      }));
+      visual.appendChild(createSvg("text", {
+        class: "node-label",
+        y: state.radius + 25,
         "text-anchor": "middle"
       }, node.shortTitle));
-
-      group.appendChild(createSvg("text", {
+      visual.appendChild(createSvg("text", {
         class: "node-meta",
-        x: position.x,
-        y: position.y + node.radius + repoWeight + 39,
+        y: state.radius + 42,
         "text-anchor": "middle"
       }, `${node.year} | ${node.repository?.commits || 0} commits`));
 
+      group.appendChild(visual);
       nodeGroup.appendChild(group);
+      graphRuntime.nodeElements.set(node.id, { group, visual, state });
     });
+
+    startGraphAnimation();
+    updateGraph(performance.now(), false);
+  }
+
+  function computeHotIds(selected, hoveredId) {
+    const focusId = hoveredId || selectedNodeId;
+    const hotIds = new Set([focusId]);
+    const focus = data.nodes.find((node) => node.id === focusId) || selected;
+
+    if (focus) {
+      focus.connections.forEach((connection) => hotIds.add(connection.target));
+      data.nodes.forEach((node) => {
+        if (node.connections.some((connection) => connection.target === focus.id)) {
+          hotIds.add(node.id);
+        }
+      });
+    }
+
+    return hotIds;
+  }
+
+  function applyGraphFocus() {
+    const selected = data.nodes.find((node) => node.id === selectedNodeId);
+    const hotIds = computeHotIds(selected, hoveredNodeId);
+
+    graphRuntime.nodeElements.forEach(({ group }, nodeId) => {
+      const isHot = hotIds.has(nodeId);
+      group.classList.toggle("is-muted", Boolean(selectedNodeId && !isHot));
+      group.classList.toggle("is-selected", nodeId === selectedNodeId);
+    });
+
+    graphRuntime.links.forEach((link) => {
+      const isHot = hotIds.has(link.sourceId) && hotIds.has(link.targetId);
+      link.hot = isHot;
+      link.path.classList.toggle("hot", isHot);
+      link.particles.forEach((particle) => {
+        particle.speed = isHot ? 0.00018 : 0.00008;
+        particle.element.classList.toggle("hot", isHot);
+        particle.element.setAttribute("r", isHot ? "3.8" : "2.2");
+      });
+    });
+  }
+
+  function updateGraph(time, scheduleNext = true) {
+    graphRuntime.nodeElements.forEach(({ group, visual, state }) => {
+      const ease = graphRuntime.reducedMotion ? 1 : 0.075;
+      const deltaX = state.targetX - state.x;
+      const deltaY = state.targetY - state.y;
+
+      if (graphRuntime.reducedMotion || Math.hypot(deltaX, deltaY) < 0.08) {
+        state.x = state.targetX;
+        state.y = state.targetY;
+      } else {
+        state.x += deltaX * ease;
+        state.y += deltaY * ease;
+      }
+
+      const drift = graphRuntime.reducedMotion ? { x: 0, y: 0 } : {
+        x: Math.sin(time * state.floatSpeed + state.phase) * state.floatAmp,
+        y: Math.cos(time * (state.floatSpeed * 0.83) + state.phase * 1.7) * state.floatAmp * 0.68
+      };
+
+      state.displayX = state.x + drift.x;
+      state.displayY = state.y + drift.y;
+      group.setAttribute("transform", `translate(${state.x.toFixed(2)} ${state.y.toFixed(2)})`);
+      visual.setAttribute("transform", `translate(${drift.x.toFixed(2)} ${drift.y.toFixed(2)})`);
+    });
+
+    graphRuntime.links.forEach((link) => {
+      const source = graphRuntime.nodeStates.get(link.sourceId);
+      const target = graphRuntime.nodeStates.get(link.targetId);
+      if (!source || !target) {
+        return;
+      }
+
+      const curve = curvedPoints(source, target, link.curve);
+      link.path.setAttribute("d", quadraticPath(curve));
+
+      link.particles.forEach((particle) => {
+        const t = ((time * particle.speed + particle.offset) % 1 + 1) % 1;
+        const point = quadraticPoint(curve, t);
+        particle.element.setAttribute("cx", point.x.toFixed(2));
+        particle.element.setAttribute("cy", point.y.toFixed(2));
+        particle.element.style.opacity = link.hot ? String(0.62 + Math.sin(t * Math.PI) * 0.35) : "0.22";
+      });
+    });
+
+    if (scheduleNext && !graphRuntime.reducedMotion) {
+      window.requestAnimationFrame(updateGraph);
+    }
+  }
+
+  function startGraphAnimation() {
+    if (graphRuntime.animationStarted || graphRuntime.reducedMotion) {
+      return;
+    }
+
+    graphRuntime.animationStarted = true;
+    window.requestAnimationFrame(updateGraph);
+  }
+
+  function createBurst(nodeId) {
+    const node = data.nodes.find((candidate) => candidate.id === nodeId);
+    const state = graphRuntime.nodeStates.get(nodeId);
+    if (!node || !state || graphRuntime.reducedMotion) {
+      return;
+    }
+
+    const group = createSvg("g", {
+      class: "spark-burst",
+      transform: `translate(${state.displayX} ${state.displayY})`
+    });
+    group.appendChild(createSvg("circle", {
+      class: "burst-ring",
+      r: state.radius + 8,
+      stroke: node.color
+    }));
+
+    for (let index = 0; index < 12; index += 1) {
+      const angle = (Math.PI * 2 * index) / 12;
+      const inner = state.radius + 6;
+      const outer = state.radius + 36 + (index % 3) * 5;
+      group.appendChild(createSvg("line", {
+        class: "burst-ray",
+        x1: Math.cos(angle) * inner,
+        y1: Math.sin(angle) * inner,
+        x2: Math.cos(angle) * outer,
+        y2: Math.sin(angle) * outer,
+        stroke: node.color
+      }));
+    }
+
+    svg.appendChild(group);
+    window.setTimeout(() => group.remove(), 820);
+  }
+
+  function curvedPoints(source, target, curve) {
+    const x1 = source.x;
+    const y1 = source.y;
+    const x2 = target.x;
+    const y2 = target.y;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const nx = -dy / distance;
+    const ny = dx / distance;
+    const control = {
+      x: (x1 + x2) / 2 + nx * curve,
+      y: (y1 + y2) / 2 + ny * curve
+    };
+
+    return { start: { x: x1, y: y1 }, control, end: { x: x2, y: y2 } };
+  }
+
+  function quadraticPath(points) {
+    return [
+      `M ${points.start.x.toFixed(2)} ${points.start.y.toFixed(2)}`,
+      `Q ${points.control.x.toFixed(2)} ${points.control.y.toFixed(2)}`,
+      `${points.end.x.toFixed(2)} ${points.end.y.toFixed(2)}`
+    ].join(" ");
+  }
+
+  function quadraticPoint(points, t) {
+    const oneMinus = 1 - t;
+    return {
+      x: oneMinus * oneMinus * points.start.x + 2 * oneMinus * t * points.control.x + t * t * points.end.x,
+      y: oneMinus * oneMinus * points.start.y + 2 * oneMinus * t * points.control.y + t * t * points.end.y
+    };
+  }
+
+  function linkCurve(sourceId, targetId) {
+    const seed = stringSeed(sourceId + targetId);
+    return ((seed % 9) - 4) * 8;
+  }
+
+  function stringSeed(value) {
+    return value.split("").reduce((total, character, index) => {
+      return total + character.charCodeAt(0) * (index + 1);
+    }, 0);
   }
 
   function createSvg(tag, attributes, text) {
@@ -283,9 +556,11 @@
 
   function selectNode(nodeId) {
     selectedNodeId = nodeId;
+    hoveredNodeId = null;
     const node = data.nodes.find((candidate) => candidate.id === nodeId);
     renderAll();
     showDetail(node);
+    createBurst(nodeId);
   }
 
   function showDetail(node) {

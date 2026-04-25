@@ -462,16 +462,21 @@ input {
 }
 
 .graph-link {
+  fill: none;
   stroke: rgba(186, 255, 232, 0.26);
   stroke-width: 2;
   stroke-linecap: round;
+  stroke-dasharray: 2 10;
   filter: drop-shadow(0 0 5px rgba(54, 241, 199, 0.16));
+  animation: route-drift 9s linear infinite;
 }
 
 .graph-link.hot {
   stroke: var(--aqua);
   stroke-width: 3;
+  stroke-dasharray: 12 12;
   filter: drop-shadow(0 0 10px rgba(54, 241, 199, 0.5));
+  animation-duration: 2.8s;
 }
 
 .graph-link.muted,
@@ -484,22 +489,88 @@ input {
   stroke: rgba(54, 241, 199, 0.32);
   stroke-width: 14;
   filter: drop-shadow(0 0 18px rgba(54, 241, 199, 0.42));
+  animation: halo-breathe 2.8s ease-in-out infinite;
+}
+
+.orbit-ring {
+  fill: none;
+  stroke: rgba(255, 212, 106, 0.34);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 10;
+  transform-origin: center;
+  animation: orbit-spin 11s linear infinite;
+}
+
+.orbit-two {
+  stroke: rgba(54, 241, 199, 0.28);
+  stroke-dasharray: 2 12;
+  animation-duration: 16s;
+  animation-direction: reverse;
 }
 
 .graph-node {
   cursor: pointer;
 }
 
+.node-hit {
+  fill: rgba(255, 255, 255, 0.001);
+  stroke: transparent;
+}
+
+.node-visual {
+  pointer-events: none;
+}
+
 .graph-node circle.core {
   stroke: rgba(245, 255, 249, 0.52);
   stroke-width: 2;
   filter: drop-shadow(0 0 12px rgba(54, 241, 199, 0.32));
+  transition: stroke-width 0.2s ease;
 }
 
 .graph-node.is-selected circle.core {
   stroke: #ffffff;
   stroke-width: 4;
   filter: drop-shadow(0 0 24px rgba(255, 212, 106, 0.58));
+}
+
+.node-aura {
+  opacity: 0.2;
+  filter: blur(2px);
+}
+
+.node-spark {
+  fill: rgba(255, 255, 255, 0.72);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.55));
+  pointer-events: none;
+}
+
+.energy-particle {
+  fill: rgba(186, 255, 232, 0.72);
+  filter: drop-shadow(0 0 8px rgba(54, 241, 199, 0.7));
+  pointer-events: none;
+}
+
+.energy-particle.hot {
+  fill: #fff8c8;
+  filter: drop-shadow(0 0 12px rgba(255, 212, 106, 0.9));
+}
+
+.spark-burst {
+  pointer-events: none;
+  animation: burst-fade 0.82s ease-out forwards;
+}
+
+.burst-ring {
+  fill: none;
+  stroke-width: 2;
+  animation: burst-ring 0.82s ease-out forwards;
+}
+
+.burst-ray {
+  stroke-width: 2;
+  stroke-linecap: round;
+  animation: burst-ray 0.82s ease-out forwards;
 }
 
 .graph-node text {
@@ -514,6 +585,61 @@ input {
   fill: var(--muted);
   font-size: 11px;
   font-weight: 800;
+}
+
+@keyframes route-drift {
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    opacity: 0.48;
+    stroke-width: 10;
+  }
+  50% {
+    opacity: 0.92;
+    stroke-width: 18;
+  }
+}
+
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes burst-fade {
+  0% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes burst-ring {
+  0% {
+    transform: scale(0.7);
+    stroke-width: 5;
+  }
+  100% {
+    transform: scale(1.65);
+    stroke-width: 0;
+  }
+}
+
+@keyframes burst-ray {
+  0% {
+    opacity: 0.9;
+    stroke-width: 3;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 0;
+  }
 }
 
 .inspector-topline {
