@@ -5,6 +5,7 @@
   const repoList = document.getElementById("repo-list");
   const searchInput = document.getElementById("search-input");
   const modeTabs = Array.from(document.querySelectorAll(".mode-tab"));
+  const starfield = document.getElementById("starfield");
 
   const themeCount = new Set(data.nodes.flatMap((node) => node.themes)).size;
   const years = data.nodes.map((node) => node.year);
@@ -341,6 +342,61 @@
     renderGraph();
   }
 
+  function initStarfield() {
+    if (!starfield) {
+      return;
+    }
+
+    const context = starfield.getContext("2d");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let width = 0;
+    let height = 0;
+    let stars = [];
+
+    function resize() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      starfield.width = Math.floor(width * ratio);
+      starfield.height = Math.floor(height * ratio);
+      starfield.style.width = width + "px";
+      starfield.style.height = height + "px";
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      const count = Math.min(220, Math.floor((width * height) / 5200));
+      stars = Array.from({ length: count }, (_, index) => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: index % 9 === 0 ? 1.7 : Math.random() * 1.15 + 0.3,
+        alpha: Math.random() * 0.55 + 0.18,
+        drift: Math.random() * 0.18 + 0.04,
+        tint: index % 11 === 0 ? "255, 212, 106" : index % 7 === 0 ? "168, 140, 255" : "186, 255, 232"
+      }));
+    }
+
+    function draw(time) {
+      context.clearRect(0, 0, width, height);
+      stars.forEach((star) => {
+        const pulse = reducedMotion ? 0 : Math.sin(time * 0.001 * star.drift + star.x) * 0.22;
+        const alpha = Math.max(0.08, star.alpha + pulse);
+        context.beginPath();
+        context.fillStyle = `rgba(${star.tint}, ${alpha})`;
+        context.shadowColor = `rgba(${star.tint}, ${alpha})`;
+        context.shadowBlur = star.radius * 7;
+        context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        context.fill();
+      });
+
+      if (!reducedMotion) {
+        window.requestAnimationFrame(draw);
+      }
+    }
+
+    resize();
+    draw(0);
+    window.addEventListener("resize", resize);
+  }
+
   searchInput.addEventListener("input", (event) => {
     searchTerm = event.target.value;
     renderAll();
@@ -355,6 +411,7 @@
   });
 
   buildFilters();
+  initStarfield();
   renderAll();
   showDetail(data.nodes.find((node) => node.id === selectedNodeId));
 })();

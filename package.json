@@ -1,5 +1,7 @@
 {
   "name": "rayford-geograph",
+  "displayName": "Rayford GeoGraph",
+  "description": "A star-map style research atlas for Yifan Yang's papers, repositories, datasets, and GeoAI workflows.",
   "private": true,
   "scripts": {
     "build": "node scripts/build-map.js"
