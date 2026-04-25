@@ -2,6 +2,11 @@
   "name": "rayford-geograph",
   "displayName": "Rayford GeoGraph",
   "description": "A star-map style research atlas for Yifan Yang's papers, repositories, datasets, and GeoAI workflows.",
+  "homepage": "https://rayford295.github.io/Rayford-GeoGraph/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rayford295/Rayford-GeoGraph.git"
+  },
   "private": true,
   "scripts": {
     "build": "node scripts/build-map.js"

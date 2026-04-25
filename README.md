@@ -1,14 +1,14 @@
 # Rayford GeoGraph
 
-[Open Live Website](https://rayford295.github.io/yifan-research-map/) | [Open Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
+[Open Live Website](https://rayford295.github.io/Rayford-GeoGraph/) | [Open Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
 
 Rayford GeoGraph is a public GitHub Pages research atlas for Yifan Yang's papers, book chapters, datasets, and code-backed GeoAI workflows. It combines a graph-first frontend with a maintainable markdown knowledge base and explicit GitHub repository metadata for every research output.
 
 ## One-Click Access
 
-- Live site: [rayford295.github.io/yifan-research-map](https://rayford295.github.io/yifan-research-map/)
+- Live site: [rayford295.github.io/Rayford-GeoGraph](https://rayford295.github.io/Rayford-GeoGraph/)
 - Main academic homepage: [rayford295.github.io](https://rayford295.github.io/)
-- Repository: [github.com/rayford295/yifan-research-map](https://github.com/rayford295/yifan-research-map)
+- Repository: [github.com/rayford295/Rayford-GeoGraph](https://github.com/rayford295/Rayford-GeoGraph)
 
 ## Frontend Experience
 
@@ -49,6 +49,6 @@ Each first-authored research output is stored as a markdown page in `wiki/papers
 ## Next Growth Directions
 
 1. Add dedicated node pages for each paper.
-2. Rename the repository to `rayford-geograph` when ready.
-3. Expand `wiki/concepts/` and `wiki/comparisons/`.
-4. Include talks, datasets, code releases, and collaborators as graph entities.
+2. Expand `wiki/concepts/` and `wiki/comparisons/`.
+3. Include talks, datasets, code releases, and collaborators as graph entities.
+4. Add bilingual content blocks directly on the website.

@@ -1,14 +1,14 @@
 # Rayford GeoGraph
 
-[一键打开网站](https://rayford295.github.io/yifan-research-map/) | [打开学术主页](https://rayford295.github.io/) | [English README](./README.md)
+[一键打开网站](https://rayford295.github.io/Rayford-GeoGraph/) | [打开学术主页](https://rayford295.github.io/) | [English README](./README.md)
 
 Rayford GeoGraph 是 Yifan Yang 的公开研究图谱网站，用来组织一作论文、书章、数据集和带代码的 GeoAI 工作流。它现在不只是论文列表，而是一个由 GitHub 仓库内容驱动的研究门户。
 
 ## 一键入口
 
-- 网站地址：[rayford295.github.io/yifan-research-map](https://rayford295.github.io/yifan-research-map/)
+- 网站地址：[rayford295.github.io/Rayford-GeoGraph](https://rayford295.github.io/Rayford-GeoGraph/)
 - 主站地址：[rayford295.github.io](https://rayford295.github.io/)
-- 仓库地址：[github.com/rayford295/yifan-research-map](https://github.com/rayford295/yifan-research-map)
+- 仓库地址：[github.com/rayford295/Rayford-GeoGraph](https://github.com/rayford295/Rayford-GeoGraph)
 
 ## 前端体验
 
@@ -49,6 +49,6 @@ Rayford GeoGraph 是 Yifan Yang 的公开研究图谱网站，用来组织一作
 ## 后续可以继续扩展
 
 1. 给每篇论文增加独立页面。
-2. 准备好之后把仓库名改成 `rayford-geograph`。
-3. 继续扩充 `wiki/concepts/` 和 `wiki/comparisons/`。
-4. 把报告、代码、数据集、演讲和合作关系也接入图谱。
+2. 继续扩充 `wiki/concepts/` 和 `wiki/comparisons/`。
+3. 把报告、代码、数据集、演讲和合作关系也接入图谱。
+4. 让网页直接支持双语内容切换。
