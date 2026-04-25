@@ -2,7 +2,7 @@
 
 [一键打开网站](https://rayford295.github.io/yifan-research-map/) | [打开学术主页](https://rayford295.github.io/) | [English README](./README.md)
 
-这个仓库用于维护 Yifan Yang 的公开研究知识图谱网站。它把可视化前端和可持续维护的 markdown 知识库结合在一起，整体思路参考了 `raw + wiki + schema` 的结构。
+这个仓库用于维护 Yifan Yang 的公开研究知识图谱网站。它把可视化前端和可持续维护的 markdown 知识库结合在一起，用来组织一作论文、书章和带代码的 GeoAI 工作流。
 
 ## 一键入口
 
@@ -21,10 +21,11 @@
 
 ## 工作方式
 
-每篇一作论文都会在 `wiki/papers/` 中对应一份 markdown 页面。页面里既有结构化元数据，也有研究脉络、方法、关系和链接。构建脚本会读取这些页面，自动生成前端图谱所需的 `data.js`，这样网站展示和知识库内容就能保持同步。
+每个一作研究产出都会在 `wiki/papers/` 中对应一份 markdown 页面。页面里既有结构化元数据，也有研究脉络、方法、关系和链接。构建脚本会读取这些页面，自动生成前端图谱所需的 `data.js`，这样网站展示和知识库内容就能保持同步。
 
 ## 当前范围
 
+- ArcGIS Text SAM Tree Segmentation
 - GeoLocator
 - Hyperlocal Disaster Damage Assessment
 - Perceiving Multidimensional Disaster Damages

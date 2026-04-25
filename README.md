@@ -2,7 +2,7 @@
 
 [Open Live Website](https://rayford295.github.io/yifan-research-map/) | [Open Main Homepage](https://rayford295.github.io/) | [中文说明](./README.zh-CN.md)
 
-This repository powers a public GitHub Pages website for Yifan Yang's research knowledge graph. It combines an interactive frontend with a maintainable markdown knowledge base inspired by the `raw + wiki + schema` pattern.
+This repository powers a public GitHub Pages website for Yifan Yang's research knowledge graph. It combines an interactive frontend with a maintainable markdown knowledge base for first-authored papers, book chapters, and code-backed GeoAI workflows.
 
 ## One-Click Access
 
@@ -21,10 +21,11 @@ This repository powers a public GitHub Pages website for Yifan Yang's research k
 
 ## How It Works
 
-Each first-authored paper is stored as a markdown page in `wiki/papers/` with structured frontmatter and narrative sections. The build script reads those files, extracts metadata, and writes `data.js` for the website. This keeps the public visualization aligned with the underlying research knowledge base.
+Each first-authored research output is stored as a markdown page in `wiki/papers/` with structured frontmatter and narrative sections. The build script reads those files, extracts metadata, and writes `data.js` for the website. This keeps the public visualization aligned with the underlying research knowledge base.
 
 ## Current Scope
 
+- ArcGIS Text SAM Tree Segmentation
 - GeoLocator
 - Hyperlocal Disaster Damage Assessment
 - Perceiving Multidimensional Disaster Damages

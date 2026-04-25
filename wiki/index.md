@@ -2,6 +2,7 @@
 
 ## Papers
 
+- [ArcGIS Text SAM Tree Segmentation](./papers/arcgis-sam-tree-segmentation.md)
 - [GeoLocator](./papers/geolocator.md)
 - [Hyperlocal Disaster Damage Assessment](./papers/hyperlocal-disaster.md)
 - [Perceiving Multidimensional Disaster Damages](./papers/disastervlp.md)
@@ -15,3 +16,5 @@
 - [Spatial Intelligence](./concepts/spatial-intelligence.md)
 - [Generative Vision](./concepts/generative-vision.md)
 - [Geo-Privacy](./concepts/geo-privacy.md)
+- [Applied GeoAI Tooling](./concepts/applied-geoai-tooling.md)
+- [Urban Greening](./concepts/urban-greening.md)

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is a bilingual research knowledge graph for Yifan Yang's first-authored publications. The public website should stay consistent with the markdown knowledge base.
+This repository is a bilingual research knowledge graph for Yifan Yang's first-authored research outputs, including papers, book chapters, and code-backed GeoAI workflows. The public website should stay consistent with the markdown knowledge base.
 
 ## Core Structure
 
@@ -15,7 +15,7 @@ This repository is a bilingual research knowledge graph for Yifan Yang's first-a
 
 ## Page Rules
 
-Every paper page in `wiki/papers/` must include YAML frontmatter with:
+Every research output page in `wiki/papers/` must include YAML frontmatter with:
 
 - `id`
 - `short_title`
@@ -32,6 +32,22 @@ Every paper page in `wiki/papers/` must include YAML frontmatter with:
 - `position`
 - `color`
 - `radius`
+
+Every research output page should also include enough narrative detail to support future project pages:
+
+- `One-Sentence Takeaway`
+- `Research Problem`
+- `Core Question`
+- `Summary`
+- `Method Snapshot`
+- `Data and Study Area`
+- `Key Contributions`
+- `How This Connects to My Other Work`
+- `Impact`
+- `Keywords`
+- `Public Links`
+- `Citation`
+- `Chinese Summary`
 
 ## Workflow
 

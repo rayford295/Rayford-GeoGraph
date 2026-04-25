@@ -1,14 +1,77 @@
 window.researchMapData = {
-  "generatedAt": "2026-04-25T16:39:17.226Z",
+  "generatedAt": "2026-04-25T16:47:54.385Z",
   "themes": [
     "All",
+    "Applied GeoAI Tooling",
+    "Computer Vision Segmentation",
     "Disaster Assessment",
     "Generative Vision",
     "Geo-Privacy",
     "Multimodal Learning",
-    "Spatial Intelligence"
+    "Spatial Intelligence",
+    "Urban Greening"
   ],
   "nodes": [
+    {
+      "id": "arcgis-sam-tree-segmentation",
+      "shortTitle": "ArcGIS Text SAM",
+      "title": "Object Detection and Segmentation of Trees using Text SAM in ArcGIS Online",
+      "year": 2025,
+      "venue": "Security First: Geospatial Workflows for a Safe and Equitable World",
+      "type": "Book Chapter",
+      "status": "Published",
+      "authors": "Yifan Yang, Dominic Borrelli",
+      "summary": "Presents a step-by-step GeoAI workflow for tree object detection and segmentation from high-resolution aerial imagery using Text SAM in ArcGIS Online Notebooks and the ArcGIS API for Python. The workflow produces vectorized tree polygons that can be opened in ArcGIS Online Map Viewer or analyzed further in ArcGIS Pro.",
+      "impact": "This chapter is important because it turns GeoAI from an abstract model capability into a teachable, reproducible ArcGIS workflow. It gives the research portfolio a practical GIS education and urban greening branch while staying connected to the larger theme of spatial intelligence.",
+      "themes": [
+        "Applied GeoAI Tooling",
+        "Computer Vision Segmentation",
+        "Spatial Intelligence",
+        "Urban Greening"
+      ],
+      "methods": [
+        "ArcGIS Online Notebooks",
+        "Text SAM",
+        "Segment Anything Model",
+        "Aerial Imagery",
+        "ArcGIS API for Python",
+        "Vectorized Tree Polygons"
+      ],
+      "links": [
+        {
+          "label": "Book",
+          "url": "https://www.esri.com/en-us/esri-press/browse/security-first-geospatial-workflows-for-a-safe-and-equitable-world"
+        },
+        {
+          "label": "Chapter",
+          "url": "https://www.researchgate.net/publication/396514864_Object_detection_and_segmentation_of_trees_using_Text_SAM_in_ArcGIS_Online"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/rayford295/ArcGIS-SAM-TreeSegmentation"
+        }
+      ],
+      "connections": [
+        {
+          "target": "geolocator",
+          "label": "shares the broader spatial intelligence goal of grounding AI outputs in geographic context"
+        },
+        {
+          "target": "satellite-to-street",
+          "label": "connects overhead or aerial imagery with downstream ground-level environmental interpretation"
+        },
+        {
+          "target": "hyperlocal-disaster",
+          "label": "extends the portfolio from damage-oriented visual analysis to urban environmental feature extraction"
+        }
+      ],
+      "position": {
+        "x": 430,
+        "y": 535
+      },
+      "color": "#2f8f6f",
+      "radius": 35
+    },
     {
       "id": "damagearbiter",
       "shortTitle": "DamageArbiter",
